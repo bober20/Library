@@ -1,9 +1,17 @@
+using Library.DataAccess;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<LibraryDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryConnectionString"));
+});
 
 var app = builder.Build();
 
