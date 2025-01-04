@@ -19,7 +19,7 @@ public class Author
     public string? Country { get; }
     public List<Book> Books { get; } 
 
-    public static (Author author, string error) Create(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book> books)
+    public static (Author? author, string error) Create(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book> books)
     {
         var error = string.Empty;
 

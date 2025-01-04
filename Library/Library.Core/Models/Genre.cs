@@ -11,7 +11,7 @@ public class Genre
         Name = name;
     }
     
-    public static (Genre genre, string error) Create(Guid id, string name)
+    public static (Genre? genre, string error) Create(Guid id, string name)
     {
         var error = string.Empty;
 
