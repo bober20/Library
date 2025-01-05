@@ -1,3 +1,6 @@
+using AutoMapper;
+using Library.Core.Models;
+using Library.DataAccess.Entities;
 using Library.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,8 +17,17 @@ public static class DependencyInjection
         services.AddTransient<IAuthorRepository, AuthorRepository>();
         services.AddTransient<IBookRepository, BookRepository>();
 
-        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<GenreEntity, Genre>()
+                .ConstructUsing(src => new Genre(src.GenreId, src.Name))
+                .ReverseMap();
+            cfg.CreateMap<AuthorEntity, Author>().ReverseMap();
+            cfg.CreateMap<BookEntity, Book>().ReverseMap();
+        });
 
+        IMapper mapper = config.CreateMapper();
+        services.AddSingleton(mapper);
         return services;
     }
 }

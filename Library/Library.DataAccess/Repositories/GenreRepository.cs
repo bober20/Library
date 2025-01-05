@@ -30,4 +30,12 @@ public class GenreRepository : IGenreRepository
 
         return genres;
     }
+    
+    public async Task<Genre> AddAsync(Genre genre, CancellationToken cancellationToken = default)
+    {
+        var genreEntity = _mapper.Map<Genre, GenreEntity>(genre);
+        await _dbContext.Genres.AddAsync(genreEntity, cancellationToken);
+        
+        return _mapper.Map<GenreEntity, Genre>(genreEntity);
+    }
 }

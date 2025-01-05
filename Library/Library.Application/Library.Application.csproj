@@ -16,7 +16,6 @@
     <ItemGroup>
       <Folder Include="AuthorUseCases\" />
       <Folder Include="BookUseCases\" />
-      <Folder Include="GenreUseCases\Commands\" />
     </ItemGroup>
 
     <ItemGroup>
