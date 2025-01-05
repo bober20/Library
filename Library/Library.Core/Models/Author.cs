@@ -2,7 +2,7 @@ namespace Library.Core.Models;
 
 public class Author
 {
-    private Author(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book> books)
+    public Author(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book> books)
     {
         Id = id;
         FirstName = firstName;

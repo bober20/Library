@@ -1,0 +1,26 @@
+using Microsoft.AspNetCore.Mvc;
+using Library.Application.GenreUseCases.Queries;
+using Library.Core.Models;
+using MediatR;
+
+namespace Library.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class GenreController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public GenreController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+    
+    // GET: api/<GenreController>
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] GetAllGenresQuery query, CancellationToken cancellationToken)
+    {
+        var genres = await _mediator.Send(query, cancellationToken);
+        return Ok(genres);
+    }
+}

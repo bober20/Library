@@ -1,5 +1,4 @@
-using Library.DataAccess;
-using Microsoft.EntityFrameworkCore;
+using Library.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,14 +7,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<LibraryDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryConnectionString"));
-});
+// builder.Services.AddDbContext<LibraryDbContext>(options =>
+// {
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryConnectionString"));
+// });
+
+builder.Services.AddApp(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

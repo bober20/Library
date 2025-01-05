@@ -7,14 +7,12 @@ public class Book
     public string Title { get; }
     public string ImageUrl { get; }
     public Genre Genre { get; }
-    public Guid GenreId { get; }
     public string Description { get; }
     public Author Author { get; }
-    public Guid AuthorId { get; }
     public DateTime BorrowDate { get; }
     public DateTime DueDate { get; }
     
-    private Book(Guid id, string isbn, string title, string imageUrl, Genre genre, Guid genreId, string description, Author author, Guid authorId, DateTime borrowDate, DateTime dueDate)
+    public Book(Guid id, string isbn, string title, string imageUrl, Genre genre, string description, Author author, DateTime borrowDate, DateTime dueDate)
     {
         Id = id;
         ISBN = isbn;
@@ -25,11 +23,9 @@ public class Book
         Author = author;
         BorrowDate = borrowDate;
         DueDate = dueDate;
-        GenreId = genreId;
-        AuthorId = authorId;
     }
     
-    public static (Book? book, string error) Create(Guid id, string isbn, string title, string imageUrl, Genre genre, Guid genreId, string description, Author author, Guid authorId, DateTime borrowDate, DateTime dueDate)
+    public static (Book? book, string error) Create(Guid id, string isbn, string title, string imageUrl, Genre genre, string description, Author author, DateTime borrowDate, DateTime dueDate)
     {
         var error = string.Empty;
 
@@ -55,7 +51,7 @@ public class Book
             return (null, error);
         }
 
-        var book = new Book(id, isbn, title, imageUrl, genre, genreId, description, author, authorId, borrowDate, dueDate);
+        var book = new Book(id, isbn, title, imageUrl, genre, description, author, borrowDate, dueDate);
         
         return (book, error);
     }
