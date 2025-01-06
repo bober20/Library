@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace Library.Application.GenreUseCases.Queries;
 
 public class GetGenreByIdHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetGenreByIdQuery, Genre>

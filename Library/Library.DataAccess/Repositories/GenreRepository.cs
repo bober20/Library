@@ -1,7 +1,3 @@
-using AutoMapper;
-using Library.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
-
 namespace Library.DataAccess.Repositories;
 
 public class GenreRepository : IGenreRepository

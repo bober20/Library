@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace Library.Application.GenreUseCases.Commands;
 
 public class AddGenreCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddGenreCommand, Genre>

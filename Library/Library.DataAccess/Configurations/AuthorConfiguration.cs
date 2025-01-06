@@ -1,5 +1,3 @@
-using Library.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Library.DataAccess.Configurations;

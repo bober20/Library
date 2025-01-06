@@ -1,41 +1,61 @@
-using System.Linq.Expressions;
-
 namespace Library.DataAccess.Repositories;
 
 public class BookRepository : IBookRepository
 {
-    public Task GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    private LibraryDbContext _dbContext;
+    private IMapper _mapper;
+
+    public BookRepository(LibraryDbContext dbContext, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
+    
+    public async Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var bookEntity = await _dbContext.Books.FindAsync(id, cancellationToken);
+        return _mapper.Map<BookEntity, Book>(bookEntity);
     }
 
-    public Task<IReadOnlyList<Book>> ListAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Book>> ListAllAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var bookEntities = await _dbContext.Books.ToListAsync(cancellationToken);
+        return bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
     }
 
-    public Task<IReadOnlyList<Book>> ListAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Book>> ListAsync(Expression<Func<Book, bool>> filter, 
+        CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var bookEntities = await _dbContext.Books.ToListAsync(cancellationToken);
+        var books = await bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b))
+            .AsQueryable()
+            .Where(filter)
+            .ToListAsync(cancellationToken);
+
+        return books;
     }
 
-    public Task AddAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task AddAsync(Book entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        await _dbContext.Books.AddAsync(_mapper.Map<Book, BookEntity>(entity), cancellationToken);
     }
 
-    public Task UpdateAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(Book entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var bookEntity = _mapper.Map<Book, BookEntity>(entity);
+        _dbContext.Update(bookEntity);
     }
 
-    public Task DeleteAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Book entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var bookEntity = _mapper.Map<Book, BookEntity>(entity);
+        _dbContext.Remove(bookEntity);
     }
 
-    public Task FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
+    public async Task<Book> FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Books.Select(b => _mapper.Map<BookEntity, Book>(b))
+            .AsQueryable()
+            .FirstAsync(filter, cancellationToken);
     }
 }

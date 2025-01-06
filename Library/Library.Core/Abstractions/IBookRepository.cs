@@ -5,7 +5,7 @@ namespace Library.Core.Abstractions;
 
 public interface IBookRepository
 {
-    Task GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<Book>> ListAllAsync(CancellationToken cancellationToken = default);
 
@@ -17,5 +17,5 @@ public interface IBookRepository
     
     Task DeleteAsync(Book entity, CancellationToken cancellationToken = default);
     
-    Task FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default);
+    Task<Book> FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default);
 }

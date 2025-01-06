@@ -16,7 +16,7 @@ public class GenreController : ControllerBase
     {
         _mediator = mediator;
     }
-    
+
     // GET: api/<GenreController>
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
@@ -24,7 +24,7 @@ public class GenreController : ControllerBase
         var genres = await _mediator.Send(new GetAllGenresQuery(), cancellationToken);
         return Ok(genres);
     }
-    
+
     [HttpPut]
     public async Task<IActionResult> Put([FromBody] Genre genre, CancellationToken cancellationToken)
     {
