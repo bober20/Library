@@ -2,7 +2,7 @@ namespace Library.Core.Models;
 
 public class Author
 {
-    public Author(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book> books)
+    public Author(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book>? books)
     {
         Id = id;
         FirstName = firstName;
@@ -17,7 +17,7 @@ public class Author
     public string LastName { get; }
     public DateTime BirthDate { get; }
     public string? Country { get; }
-    public List<Book> Books { get; } 
+    public List<Book>? Books { get; } 
 
     public static (Author? author, string error) Create(Guid id, string firstName, string lastName, DateTime birthDate, string country, List<Book> books)
     {

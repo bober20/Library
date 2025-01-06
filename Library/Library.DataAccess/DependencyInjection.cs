@@ -34,7 +34,7 @@ public static class DependencyInjection
     private static Author MapAuthor(AuthorEntity src, ResolutionContext resolutionContext)
     {
         return new Author(src.AuthorId, src.FirstName, src.LastName, src.BirthDate, src.Country,
-            src.Books.Select(b => MapBook(b, resolutionContext)).ToList());
+            src.Books?.Select(b => MapBook(b, resolutionContext)).ToList());
     }
 
     private static Book MapBook(BookEntity src, ResolutionContext resolutionContext)
@@ -42,7 +42,7 @@ public static class DependencyInjection
         return new Book(src.BookId, src.ISBN, src.Title, src.ImageUrl,
             new Genre(src.Genre.GenreId, src.Genre.Name), src.Description,
             new Author(src.Author.AuthorId, src.Author.FirstName, src.Author.LastName,
-                src.Author.BirthDate, src.Author.Country, new List<Book>()),
+                src.Author.BirthDate, src.Author.Country, null),
             src.BorrowDate, src.DueDate);
     }
 }

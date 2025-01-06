@@ -26,29 +26,36 @@ public class BookController : ControllerBase
     }
 
     // // GET api/<BookController>/5
-    // [HttpGet("{id}")]
-    // public string Get(int id)
-    // {
-    //     return "value";
-    // }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
+    {
+        var book = await _mediator.Send(new GetBookByIdQuery(id), cancellationToken);
+        return Ok(book);
+    }
 
     // POST api/<BookController>
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Book book, CancellationToken cancellationToken)
     {
-        await _mediator.Send(new AddBookCommand(book), cancellationToken);
-        return Ok();
+        var response = await _mediator.Send(new AddBookCommand(book), cancellationToken);
+        return Ok(response);
     }
 
     // // PUT api/<BookController>/5
-    // [HttpPut("{id}")]
-    // public void Put(int id, [FromBody] string value)
-    // {
-    // }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put([FromBody] Book book, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new UpdateBookCommand(book), cancellationToken);
+
+        return Ok(response);
+    }
     //
     // // DELETE api/<BookController>/5
-    // [HttpDelete("{id}")]
-    // public void Delete(int id)
-    // {
-    // }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromBody] Book book, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new DeleteBookCommand(book), cancellationToken);
+
+        return Ok(response);
+    }
 }

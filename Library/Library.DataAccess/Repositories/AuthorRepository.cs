@@ -2,28 +2,45 @@ namespace Library.DataAccess.Repositories;
 
 public class AuthorRepository : IAuthorRepository
 {
-    public Task GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    private LibraryDbContext _dbContext;
+    private IMapper _mapper;
+    
+    public AuthorRepository(LibraryDbContext dbContext, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
+    
+    public async Task<Author> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var authorEntity = await _dbContext.Authors.FindAsync(id, cancellationToken);
+        
+        return _mapper.Map<AuthorEntity, Author>(authorEntity);
     }
 
-    public Task<IReadOnlyList<Author>> ListAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Author>> ListAllAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var authorsEntities = await _dbContext.Authors.ToListAsync(cancellationToken);
+        return authorsEntities.Select(a => _mapper.Map<AuthorEntity, Author>(a)).ToList();
     }
 
-    public Task AddAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task AddAsync(Author entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var authorEntity = _mapper.Map<Author, AuthorEntity>(entity);
+        await _dbContext.Authors.AddAsync(authorEntity, cancellationToken);
     }
 
-    public Task UpdateAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(Author entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var authorEntity = _mapper.Map<Author, AuthorEntity>(entity);
+        
+        _dbContext.Authors.Update(authorEntity);
     }
 
-    public Task DeleteAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Author entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var authorEntity = _mapper.Map<Author, AuthorEntity>(entity);
+        
+        _dbContext.Authors.Remove(authorEntity);
     }
 }
