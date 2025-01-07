@@ -1,3 +1,3 @@
 namespace Library.Application.GenreUseCases.Queries;
 
-public record GetGenreByIdQuery(Guid Id) : IRequest<Genre>;
+public record GetGenreByIdQuery(Guid Id) : IRequest<ResponseData<Genre>>;

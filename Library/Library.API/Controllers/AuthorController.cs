@@ -12,10 +12,12 @@ namespace Library.API.Controllers;
 public class AuthorController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly int _itemsPerPage;
     
-    public AuthorController(IMediator mediator)
+    public AuthorController(IMediator mediator, IConfiguration configuration)
     {
         _mediator = mediator;
+        _itemsPerPage = configuration.GetValue<int>("ItemsPerPage");
     }
     
     // GET: api/<AuthorController>
@@ -36,10 +38,10 @@ public class AuthorController : ControllerBase
         return Ok(response);
     }
     
-    [HttpGet("getAllAuthorBooks/{id:guid}")]
-    public async Task<IActionResult> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken)
+    [HttpGet("getAllAuthorBooks/{id:guid}/{pageNo:int}")]
+    public async Task<IActionResult> GetAllAuthorBooks(Guid id, int pageNo, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetAllAuthorBooksQuery(id), cancellationToken);
+        var response = await _mediator.Send(new GetAllAuthorBooksQuery(id, pageNo, _itemsPerPage), cancellationToken);
 
         return Ok(response);
     }

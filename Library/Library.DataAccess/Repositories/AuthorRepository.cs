@@ -11,17 +11,19 @@ public class AuthorRepository : IAuthorRepository
         _mapper = mapper;
     }
     
-    public async Task<Author> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ResponseData<Author>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var authorEntity = await _dbContext.Authors.FindAsync(id, cancellationToken);
+        var author = _mapper.Map<AuthorEntity, Author>(authorEntity);
         
-        return _mapper.Map<AuthorEntity, Author>(authorEntity);
+        return ResponseData<Author>.Success(author);
     }
 
-    public async Task<IReadOnlyList<Author>> ListAllAsync(CancellationToken cancellationToken = default)
+    public async Task<ResponseData<IReadOnlyList<Author>>> ListAllAsync(CancellationToken cancellationToken = default)
     {
         var authorsEntities = await _dbContext.Authors.AsNoTracking().ToListAsync(cancellationToken);
-        return authorsEntities.Select(a => _mapper.Map<AuthorEntity, Author>(a)).ToList();
+        var authors = authorsEntities.Select(a => _mapper.Map<AuthorEntity, Author>(a)).ToList();
+        return ResponseData<IReadOnlyList<Author>>.Success(authors);
     }
 
     public async Task AddAsync(Author entity, CancellationToken cancellationToken = default)
@@ -49,11 +51,34 @@ public class AuthorRepository : IAuthorRepository
         }
     }
     
-    public async Task<IReadOnlyList<Book>> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ResponseData<IReadOnlyList<Book>>> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken = default)
     {
         var authorEntity = await _dbContext.Authors.FindAsync(id);
         await _dbContext.Entry(authorEntity).Collection(a => a.Books).LoadAsync(cancellationToken);
+        var books = authorEntity.Books.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
 
-        return authorEntity.Books.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
+        return ResponseData<IReadOnlyList<Book>>.Success(books);
+    }
+    
+    public async Task<ResponseData<ListModel<Book>>> GetAllAuthorBooks(Guid id, int pageNo, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var authorEntity = await _dbContext.Authors.FindAsync(id);
+        await _dbContext.Entry(authorEntity).Collection(a => a.Books).LoadAsync(cancellationToken);
+        var books = authorEntity.Books.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
+        
+        var booksListModel = new ListModel<Book>();
+        var count = books.Count;
+        var totalPages = (int)Math.Ceiling((double)(count / pageSize));
+
+        if (count == 0)
+        {
+            return ResponseData<ListModel<Book>>.Success(booksListModel); 
+        }
+        
+        booksListModel.Items = books.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+        booksListModel.CurrentPage = pageNo;
+        booksListModel.TotalPages = totalPages;
+
+        return ResponseData<ListModel<Book>>.Success(booksListModel);
     }
 }

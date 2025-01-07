@@ -1,3 +1,3 @@
 namespace Library.Application.BookUseCases.Queries;
 
-public record GetAllBooksQuery : IRequest<IReadOnlyList<Book>>;
+public record GetAllBooksQuery(int PageNo, int PageSize) : IRequest<ResponseData<ListModel<Book>>>;

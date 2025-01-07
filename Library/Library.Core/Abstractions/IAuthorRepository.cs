@@ -4,9 +4,9 @@ namespace Library.Core.Abstractions;
 
 public interface IAuthorRepository
 {
-    Task<Author> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<ResponseData<Author>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<Author>> ListAllAsync(CancellationToken cancellationToken = default);
+    Task<ResponseData<IReadOnlyList<Author>>> ListAllAsync(CancellationToken cancellationToken = default);
     
     Task AddAsync(Author entity, CancellationToken cancellationToken = default);
     
@@ -14,5 +14,9 @@ public interface IAuthorRepository
     
     Task DeleteAsync(Author entity, CancellationToken cancellationToken = default);
     
-    Task<IReadOnlyList<Book>> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken = default);
+    Task<ResponseData<IReadOnlyList<Book>>> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken = default);
+
+    Task<ResponseData<ListModel<Book>>> GetAllAuthorBooks(Guid id, int pageNo, int pageSize,
+        CancellationToken cancellationToken = default);
+
 }

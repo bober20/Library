@@ -11,27 +11,25 @@ public class GenreRepository : IGenreRepository
         _mapper = mapper;
     }
     
-    public async Task<Genre> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ResponseData<Genre>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var genreEntity = await _dbContext.Genres.FirstOrDefaultAsync(g => g.GenreId == id, cancellationToken: cancellationToken);
+        var genre = _mapper.Map<GenreEntity, Genre>(genreEntity);
 
-        return _mapper.Map<GenreEntity, Genre>(genreEntity);
+        return ResponseData<Genre>.Success(genre);
     }
 
-    public async Task<IReadOnlyList<Genre>> ListAllAsync(CancellationToken cancellationToken = default)
+    public async Task<ResponseData<IReadOnlyList<Genre>>> ListAllAsync(CancellationToken cancellationToken = default)
     {
         var genreEntities = await _dbContext.Genres.AsNoTracking().ToListAsync(cancellationToken: cancellationToken);
-
         IReadOnlyList<Genre> genres = genreEntities.Select(g => _mapper.Map<GenreEntity, Genre>(g)).ToList();
 
-        return genres;
+        return ResponseData<IReadOnlyList<Genre>>.Success(genres);
     }
     
-    public async Task<Genre> AddAsync(Genre genre, CancellationToken cancellationToken = default)
+    public async Task AddAsync(Genre genre, CancellationToken cancellationToken = default)
     {
         var genreEntity = _mapper.Map<Genre, GenreEntity>(genre);
         await _dbContext.Genres.AddAsync(genreEntity, cancellationToken);
-        
-        return _mapper.Map<GenreEntity, Genre>(genreEntity);
     }
 }

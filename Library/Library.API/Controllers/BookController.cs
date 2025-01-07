@@ -11,17 +11,19 @@ namespace Library.API.Controllers;
 public class BookController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly int _itemsPerPage;
     
-    public BookController(IMediator mediator)
+    public BookController(IMediator mediator, IConfiguration configuration)
     {
         _mediator = mediator;
+        _itemsPerPage = configuration.GetValue<int>("ItemsPerPage");
     }
     
     // GET: api/<BookController>
-    [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    [HttpGet("{pageNo:int}")]
+    public async Task<IActionResult> Get(int pageNo, CancellationToken cancellationToken)
     {
-        var books = await _mediator.Send(new GetAllBooksQuery(), cancellationToken);
+        var books = await _mediator.Send(new GetAllBooksQuery(pageNo, _itemsPerPage), cancellationToken);
         
         return Ok(books);
     }
@@ -35,8 +37,8 @@ public class BookController : ControllerBase
         return Ok(book);
     }
     
-    [HttpGet("getByISBN/{ISBN}")]
-    public async Task<IActionResult> Get(string ISBN, CancellationToken cancellationToken)
+    [HttpGet("getByISBN/{ISBN}/{pageNo:int}")]
+    public async Task<IActionResult> Get(string ISBN, int pageNo, CancellationToken cancellationToken)
     {
         var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.ISBN == ISBN), cancellationToken);
         

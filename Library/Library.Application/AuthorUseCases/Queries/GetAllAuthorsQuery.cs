@@ -1,3 +1,3 @@
 namespace Library.Application.AuthorUseCases.Queries;
 
-public record GetAllAuthorsQuery : IRequest<IReadOnlyList<Author>>;
+public record GetAllAuthorsQuery : IRequest<ResponseData<IReadOnlyList<Author>>>;

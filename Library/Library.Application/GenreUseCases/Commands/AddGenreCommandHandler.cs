@@ -4,9 +4,9 @@ public class AddGenreCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<Ad
 {
     public async Task<Genre> Handle(AddGenreCommand request, CancellationToken cancellationToken)
     {
-        var genre =  await unitOfWork.GenreRepository.AddAsync(request.Genre, cancellationToken);
+        await unitOfWork.GenreRepository.AddAsync(request.Genre, cancellationToken);
         await unitOfWork.SaveAllAsync();
 
-        return genre;
+        return request.Genre;
     }
 }

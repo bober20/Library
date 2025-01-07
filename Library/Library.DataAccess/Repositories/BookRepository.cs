@@ -11,19 +11,22 @@ public class BookRepository : IBookRepository
         _mapper = mapper;
     }
     
-    public async Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ResponseData<Book>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var bookEntity = await _dbContext.Books.FindAsync(id, cancellationToken);
-        return _mapper.Map<BookEntity, Book>(bookEntity);
+        var book = _mapper.Map<BookEntity, Book>(bookEntity);
+        return ResponseData<Book>.Success(book);
     }
 
-    public async Task<IReadOnlyList<Book>> ListAllAsync(CancellationToken cancellationToken = default)
+    public async Task<ResponseData<IReadOnlyList<Book>>> ListAllAsync(CancellationToken cancellationToken = default)
     {
         var bookEntities = await _dbContext.Books.AsNoTracking().ToListAsync(cancellationToken);
-        return bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
-    }
+        var books = bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
 
-    public async Task<IReadOnlyList<Book>> ListAsync(Expression<Func<Book, bool>> filter, 
+        return ResponseData<IReadOnlyList<Book>>.Success(books);
+    }
+    
+    public async Task<ResponseData<IReadOnlyList<Book>>> ListAsync(Expression<Func<Book, bool>> filter, 
         CancellationToken cancellationToken = default)
     {
         var bookEntities = await _dbContext.Books.AsNoTracking().ToListAsync(cancellationToken);
@@ -32,7 +35,53 @@ public class BookRepository : IBookRepository
             .Where(filter)
             .ToListAsync(cancellationToken);
 
-        return books;
+        return ResponseData<IReadOnlyList<Book>>.Success(books);
+    }
+
+    public async Task<ResponseData<ListModel<Book>>> ListAllAsync(int pageNo, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var bookEntities = await _dbContext.Books.AsNoTracking().ToListAsync(cancellationToken);
+        var books = bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b)).ToList();
+
+        var booksListModel = new ListModel<Book>();
+        var count = books.Count;
+        var totalPages = (int)Math.Ceiling((double)(count / pageSize));
+
+        if (count == 0)
+        {
+            return ResponseData<ListModel<Book>>.Success(booksListModel); 
+        }
+        
+        booksListModel.Items = books.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+        booksListModel.CurrentPage = pageNo;
+        booksListModel.TotalPages = totalPages;
+
+        return ResponseData<ListModel<Book>>.Success(booksListModel);
+    }
+
+    public async Task<ResponseData<ListModel<Book>>> ListAsync(int pageNo, int pageSize, 
+        Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
+    {
+        var bookEntities = await _dbContext.Books.AsNoTracking().ToListAsync(cancellationToken);
+        var books = await bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b))
+            .AsQueryable()
+            .Where(filter)
+            .ToListAsync(cancellationToken);
+        
+        var booksListModel = new ListModel<Book>();
+        var count = books.Count;
+        var totalPages = (int)Math.Ceiling((double)(count / pageSize));
+
+        if (count == 0)
+        {
+            return ResponseData<ListModel<Book>>.Success(booksListModel);
+        }
+        
+        booksListModel.Items = books.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+        booksListModel.CurrentPage = pageNo;
+        booksListModel.TotalPages = totalPages;
+
+        return ResponseData<ListModel<Book>>.Success(booksListModel);
     }
 
     public async Task AddAsync(Book entity, CancellationToken cancellationToken = default)
@@ -68,11 +117,13 @@ public class BookRepository : IBookRepository
             _dbContext.Books.Remove(existingBookEntity);
         }
     }
-
-    public async Task<Book> FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
+    
+    public async Task<ResponseData<Book>> FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Books.Select(b => _mapper.Map<BookEntity, Book>(b))
+        var book = await _dbContext.Books.Select(b => _mapper.Map<BookEntity, Book>(b))
             .AsQueryable()
             .FirstAsync(filter, cancellationToken);
+
+        return ResponseData<Book>.Success(book);
     }
 }
