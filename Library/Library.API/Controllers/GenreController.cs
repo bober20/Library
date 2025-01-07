@@ -22,6 +22,7 @@ public class GenreController : ControllerBase
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         var genres = await _mediator.Send(new GetAllGenresQuery(), cancellationToken);
+        
         return Ok(genres);
     }
 
@@ -29,6 +30,7 @@ public class GenreController : ControllerBase
     public async Task<IActionResult> Put([FromBody] Genre genre, CancellationToken cancellationToken)
     {
         var updatedGenre = await _mediator.Send(new AddGenreCommand(genre), cancellationToken);
+        
         return Ok(updatedGenre);
     }
 }

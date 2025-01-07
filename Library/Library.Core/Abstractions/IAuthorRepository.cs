@@ -13,4 +13,6 @@ public interface IAuthorRepository
     Task UpdateAsync(Author entity, CancellationToken cancellationToken = default);
     
     Task DeleteAsync(Author entity, CancellationToken cancellationToken = default);
+    
+    Task<IReadOnlyList<Book>> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken = default);
 }

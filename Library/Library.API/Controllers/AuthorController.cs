@@ -35,6 +35,14 @@ public class AuthorController : ControllerBase
 
         return Ok(response);
     }
+    
+    [HttpGet("getAllAuthorBooks/{id:guid}")]
+    public async Task<IActionResult> GetAllAuthorBooks(Guid id, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetAllAuthorBooksQuery(id), cancellationToken);
+
+        return Ok(response);
+    }
 
     // POST api/<AuthorController>
     [HttpPost]
