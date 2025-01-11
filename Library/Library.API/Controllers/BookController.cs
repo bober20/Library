@@ -37,8 +37,8 @@ public class BookController : ControllerBase
         return Ok(book);
     }
     
-    [HttpGet("getByISBN/{ISBN}/{pageNo:int}")]
-    public async Task<IActionResult> Get(string ISBN, int pageNo, CancellationToken cancellationToken)
+    [HttpGet("getByISBN/{ISBN}")]
+    public async Task<IActionResult> Get(string ISBN, CancellationToken cancellationToken)
     {
         var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.ISBN == ISBN), cancellationToken);
         

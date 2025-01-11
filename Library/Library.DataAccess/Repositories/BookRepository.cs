@@ -45,7 +45,7 @@ public class BookRepository : IBookRepository
 
         var booksListModel = new ListModel<Book>();
         var count = books.Count;
-        var totalPages = (int)Math.Ceiling((double)(count / pageSize));
+        var totalPages = (int)Math.Ceiling((double)count / pageSize);
 
         if (count == 0)
         {
@@ -70,7 +70,7 @@ public class BookRepository : IBookRepository
         
         var booksListModel = new ListModel<Book>();
         var count = books.Count;
-        var totalPages = (int)Math.Ceiling((double)(count / pageSize));
+        var totalPages = (int)Math.Ceiling((double)count / pageSize);
 
         if (count == 0)
         {
