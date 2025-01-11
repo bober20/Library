@@ -87,8 +87,8 @@ public class BookRepository : IBookRepository
     public async Task AddAsync(Book entity, CancellationToken cancellationToken = default)
     {
         var bookEntity = _mapper.Map<Book, BookEntity>(entity);
-        _dbContext.Authors.Attach(bookEntity.Author);
-        _dbContext.Genres.Attach(bookEntity.Genre);
+        bookEntity.Author = await _dbContext.Authors.FindAsync(bookEntity.AuthorId);
+        bookEntity.Genre = await _dbContext.Genres.FindAsync(bookEntity.GenreId);
         
         await _dbContext.Books.AddAsync(bookEntity, cancellationToken);
         

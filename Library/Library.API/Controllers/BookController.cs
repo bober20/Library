@@ -48,7 +48,7 @@ public class BookController : ControllerBase
     [HttpGet("getByAuthor/{authorId:guid}")]
     public async Task<IActionResult> GetByAuthor(Guid authorId, CancellationToken cancellationToken)
     {
-        var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.Author.Id == authorId), cancellationToken);
+        var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.AuthorId == authorId), cancellationToken);
         
         return Ok(book);
     }
@@ -56,7 +56,7 @@ public class BookController : ControllerBase
     [HttpGet("getByGenre/{authorId:guid}")]
     public async Task<IActionResult> GetByGenre(Guid genreId, CancellationToken cancellationToken)
     {
-        var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.Genre.Id == genreId), cancellationToken);
+        var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.GenreId == genreId), cancellationToken);
         
         return Ok(book);
     }

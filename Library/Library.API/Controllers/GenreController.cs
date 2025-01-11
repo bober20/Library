@@ -26,8 +26,8 @@ public class GenreController : ControllerBase
         return Ok(genres);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Put([FromBody] Genre genre, CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] Genre genre, CancellationToken cancellationToken)
     {
         var updatedGenre = await _mediator.Send(new AddGenreCommand(genre), cancellationToken);
         
