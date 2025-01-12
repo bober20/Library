@@ -5,6 +5,7 @@ import { GetAllBooks } from '../services/books_service';
 import '../styles/Admin.css';
 import AddAuthorForm from '../components/AddAuthorForm';
 import Paginator from '../components/Paginator';
+import { Link } from 'react-router-dom';
 
 export default function Admin() {
     const [books, setBooks] = useState([]);
@@ -54,6 +55,7 @@ export default function Admin() {
                         return (
                             <li key={book.id}>
                                 {book.title} by {author ? `${author.firstName} ${author.lastName}` : 'Unknown Author'}
+                                <Link to={`/editBook/${book.id}`}>Edit</Link>
                             </li>
                         );
                     })}

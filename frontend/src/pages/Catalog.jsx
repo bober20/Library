@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GetAllGenres } from '../services/genres_service';
-import AddGenreForm from '../components/AddGenreForm';
-import AddBookForm from '../components/AddBookForm';
 import { GetAllAuthors } from '../services/author_service';
+import { GetAllBooks } from '../services/books_service';
 import Paginator from '../components/Paginator';
 
 export default function Catalog() {
-    const [genres, setGenres] = useState([]);
+    const [books, setBooks] = useState([]);
     const [authors, setAuthors] = useState([]);
+    const [genres, setGenres] = useState([]);
     const [error, setError] = useState(null);
     const [pageNo, setPageNo] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchGenres = async () => {
             try {
                 const data = await GetAllGenres();
                 setGenres(data);
-                setPageNo(data.pageNo);
-                setTotalPages(data.totalPages);
             } catch (err) {
                 setError(err.message);
             }
@@ -31,11 +31,36 @@ export default function Catalog() {
             } catch (err) {
                 setError(err.message);
             }
-        }
+        };
+
+        const fetchBooks = async () => {
+            try {
+                const data = await GetAllBooks();
+                setBooks(data.items);
+            } catch (err) {
+                setError(err.message);
+            }
+        };
 
         fetchGenres();
         fetchAuthors();
+        fetchBooks();
     }, []);
+
+    const handleBookClick = (bookId) => {
+        navigate(`/bookPage/${bookId}`);
+    };
+
+    async function fetchBookList(pageNo = 1) {
+            try {
+                const data = await GetAllBooks(pageNo);
+                setBooks(data.items);
+                setPageNo(data.currentPage);
+                setTotalPages(data.totalPages);
+            } catch (err) {
+                setError(err.message);
+            }
+        }
 
     if (error) {
         return <p>Error: {error}</p>;
@@ -43,13 +68,15 @@ export default function Catalog() {
 
     return (
         <div>
-            <h1>Genres</h1>
+            <h1>Books</h1>
             <ul>
-                {genres.map((genre) => (
-                    <li key={genre.id}>{genre.name}</li>
+                {books.map((book) => (
+                    <li key={book.id} onClick={() => handleBookClick(book.id)} style={{ cursor: 'pointer' }}>
+                        {book.title}
+                    </li>
                 ))}
             </ul>
-            <Paginator pageNo={pageNo} totalPages={totalPages} setPageNo={setPageNo} />
+            <Paginator pageNo={pageNo} totalPages={totalPages} onPageChange={fetchBookList} />
             <h1>Authors</h1>
             <ul>
                 {authors.map((author) => (
