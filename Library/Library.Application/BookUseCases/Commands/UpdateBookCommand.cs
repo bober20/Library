@@ -1,3 +1,3 @@
 namespace Library.Application.BookUseCases.Commands;
 
-public record UpdateBookCommand(Book Book) : IRequest<Book>;
+public record UpdateBookCommand(Guid BookId, Book Book) : IRequest<Book>;

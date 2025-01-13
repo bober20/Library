@@ -17,9 +17,9 @@ public interface IBookRepository
 
     Task AddAsync(Book entity, CancellationToken cancellationToken = default);
     
-    Task UpdateAsync(Book entity, CancellationToken cancellationToken = default);
-    
-    Task DeleteAsync(Book entity, CancellationToken cancellationToken = default);
+    Task UpdateAsync(Guid id, Book entity, CancellationToken cancellationToken = default);
+
+    public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<ResponseData<Book>> FirstOrDefaultAsync(Expression<Func<Book, bool>> filter,
         CancellationToken cancellationToken = default);

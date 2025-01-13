@@ -21,7 +21,7 @@ public class BookController : ControllerBase
     
     // GET: api/<BookController>
     [HttpGet("{pageNo:int}")]
-    public async Task<IActionResult> Get(int pageNo, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromRoute] int pageNo, CancellationToken cancellationToken)
     {
         var books = await _mediator.Send(new GetAllBooksQuery(pageNo, _itemsPerPage), cancellationToken);
         
@@ -30,7 +30,7 @@ public class BookController : ControllerBase
 
     // GET api/<BookController>/5
     [HttpGet("getById/{id:guid}")]
-    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var book = await _mediator.Send(new GetBookByIdQuery(id), cancellationToken);
         
@@ -38,25 +38,25 @@ public class BookController : ControllerBase
     }
     
     [HttpGet("getByISBN/{ISBN}")]
-    public async Task<IActionResult> Get(string ISBN, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromRoute] string ISBN, CancellationToken cancellationToken)
     {
         var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.ISBN == ISBN), cancellationToken);
         
         return Ok(book);
     }
     
-    [HttpGet("getByAuthor/{authorId:guid}")]
-    public async Task<IActionResult> GetByAuthor(Guid authorId, CancellationToken cancellationToken)
+    [HttpGet("getByAuthor/{authorId:guid}/{pageNo:int}")]
+    public async Task<IActionResult> GetByAuthor([FromRoute] Guid authorId, int pageNo, CancellationToken cancellationToken)
     {
-        var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.AuthorId == authorId), cancellationToken);
+        var book = await _mediator.Send(new GetBooksQuery(pageNo,_itemsPerPage, b => b.AuthorId == authorId), cancellationToken);
         
         return Ok(book);
     }
     
-    [HttpGet("getByGenre/{authorId:guid}")]
-    public async Task<IActionResult> GetByGenre(Guid genreId, CancellationToken cancellationToken)
+    [HttpGet("getByGenre/{genreId:guid}/{pageNo:int}")]
+    public async Task<IActionResult> GetByGenre([FromRoute] Guid genreId, int pageNo, CancellationToken cancellationToken)
     {
-        var book = await _mediator.Send(new GetFirstOrDefaultQuery(b => b.GenreId == genreId), cancellationToken);
+        var book = await _mediator.Send(new GetBooksQuery(pageNo, _itemsPerPage, b => b.GenreId == genreId), cancellationToken);
         
         return Ok(book);
     }
@@ -72,18 +72,18 @@ public class BookController : ControllerBase
 
     // PUT api/<BookController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put([FromBody] Book book, CancellationToken cancellationToken)
+    public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] Book book, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new UpdateBookCommand(book), cancellationToken);
+        var response = await _mediator.Send(new UpdateBookCommand(id, book), cancellationToken);
 
         return Ok(response);
     }
     
     // DELETE api/<BookController>/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromBody] Book book, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new DeleteBookCommand(book), cancellationToken);
+        var response = await _mediator.Send(new DeleteBookCommand(id), cancellationToken);
 
         return Ok(response);
     }

@@ -1,12 +1,12 @@
 namespace Library.Application.BookUseCases.Commands;
 
-public class DeleteBookHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteBookCommand, Book>
+public class DeleteBookHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteBookCommand, bool>
 {
-    public async Task<Book> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
     {
-        await unitOfWork.BookRepository.DeleteAsync(request.Book, cancellationToken);
+        var isDeleted = await unitOfWork.BookRepository.DeleteAsync(request.Id, cancellationToken);
         await unitOfWork.SaveAllAsync();
 
-        return request.Book;
+        return isDeleted;
     }
 }

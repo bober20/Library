@@ -1,3 +1,3 @@
 namespace Library.Application.BookUseCases.Commands;
 
-public record DeleteBookCommand(Book Book) : IRequest<Book>;
+public record DeleteBookCommand(Guid Id) : IRequest<bool>;

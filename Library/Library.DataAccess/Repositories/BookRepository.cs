@@ -63,10 +63,10 @@ public class BookRepository : IBookRepository
         Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)
     {
         var bookEntities = await _dbContext.Books.AsNoTracking().ToListAsync(cancellationToken);
-        var books = await bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b))
+        var books =  bookEntities.Select(b => _mapper.Map<BookEntity, Book>(b))
             .AsQueryable()
             .Where(filter)
-            .ToListAsync(cancellationToken);
+            .ToList();
         
         var booksListModel = new ListModel<Book>();
         var count = books.Count;
@@ -91,17 +91,11 @@ public class BookRepository : IBookRepository
         bookEntity.Genre = await _dbContext.Genres.FindAsync(bookEntity.GenreId);
         
         await _dbContext.Books.AddAsync(bookEntity, cancellationToken);
-        
-        // var genreEntity = await _dbContext.Genres.FindAsync(entity.Genre.Id, cancellationToken);
-        // var authorEntity = await _dbContext.Authors.FindAsync(entity.Author.Id, cancellationToken);
-        //
-        // bookEntity.Author = authorEntity;
-        // bookEntity.Genre = genreEntity;
     }
 
-    public async Task UpdateAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(Guid id, Book entity, CancellationToken cancellationToken = default)
     {
-        var existingBookEntity = await _dbContext.Books.FindAsync(entity.Id, cancellationToken);
+        var existingBookEntity = await _dbContext.Books.FindAsync(id, cancellationToken);
         if (existingBookEntity != null)
         {
             _mapper.Map(entity, existingBookEntity);
@@ -109,13 +103,16 @@ public class BookRepository : IBookRepository
         }
     }
 
-    public async Task DeleteAsync(Book entity, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var existingBookEntity = await _dbContext.Books.FindAsync(entity.Id, cancellationToken);
+        var existingBookEntity = await _dbContext.Books.FindAsync(id, cancellationToken);
         if (existingBookEntity != null)
         {
             _dbContext.Books.Remove(existingBookEntity);
+            return true;
         }
+
+        return false;
     }
     
     public async Task<ResponseData<Book>> FirstOrDefaultAsync(Expression<Func<Book, bool>> filter, CancellationToken cancellationToken = default)

@@ -4,7 +4,7 @@ public class UpdateBookHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateB
 {
     public async Task<Book> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
     {
-        await unitOfWork.BookRepository.UpdateAsync(request.Book, cancellationToken);
+        await unitOfWork.BookRepository.UpdateAsync(request.BookId, request.Book, cancellationToken);
         await unitOfWork.SaveAllAsync();
         
         return request.Book;
