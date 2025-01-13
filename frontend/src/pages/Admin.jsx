@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AddBookForm from '../components/AddBookForm';
 import { GetAllAuthors } from '../services/author_service';
-import { GetAllBooks } from '../services/books_service';
+import { GetAllBooks, DeleteBook } from '../services/books_service';
 import '../styles/Admin.css';
 import AddAuthorForm from '../components/AddAuthorForm';
 import Paginator from '../components/Paginator';
@@ -20,6 +20,15 @@ export default function Admin() {
             setBooks(data.items);
             setPageNo(data.currentPage);
             setTotalPages(data.totalPages);
+        } catch (err) {
+            setError(err.message);
+        }
+    }
+
+    async function deleteBook(bookId) {
+        try {
+            await DeleteBook(bookId);
+            fetchBookList(pageNo);
         } catch (err) {
             setError(err.message);
         }
@@ -56,6 +65,7 @@ export default function Admin() {
                             <li key={book.id}>
                                 {book.title} by {author ? `${author.firstName} ${author.lastName}` : 'Unknown Author'}
                                 <Link to={`/editBook/${book.id}`}>Edit</Link>
+                                <button onClick={() => deleteBook(book.id)}>Delete</button>
                             </li>
                         );
                     })}

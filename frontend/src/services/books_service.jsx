@@ -21,11 +21,13 @@ export const GetAllBooks = async (pageNo = 1) => {
 
         if (response.status === 200) {
             return response.data.data;
-        } else {
+        } else if (!response.data.successful) {
             throw new Error(response.data.errorMessage);
+        } else {
+            throw new Error("Error fetching all books");
         }
     } catch (error) {
-        console.error("Error fetching all books:", error);
+        console.error( error);
         throw error;
     }
 }
@@ -35,13 +37,14 @@ export const GetBookById = async (bookId) => {
         const response = await axios.get('http://localhost:5255/api/Book/getById/' + bookId);
 
         if (response.status === 200) {
-            console.log(response.data.data);
             return response.data.data;
-        } else {
+        } else if (!response.data.successful) {
             throw new Error(response.data.errorMessage);
+        } else {
+            throw new Error("Error fetching book by id");
         }
     } catch (error) {
-        console.error("Error fetching book by id:", error);
+        console.error(error);
         throw error;
     }
 }
@@ -52,11 +55,67 @@ export const UpdateBook = async (bookId, book) => {
 
         if (response.status === 200) {
             return response.data.data;
-        } else {
+        } else if (!response.data.successful) {
             throw new Error(response.data.errorMessage);
+        } else {
+            throw new Error("Error updating book");
         }
     } catch (error) {
-        console.error("Error updating book:", error);
+        console.error(error);
+        throw error;
+    }
+}
+
+export const DeleteBook = async (bookId) => {
+    try {
+        const response = await axios.delete('http://localhost:5255/api/Book/' + bookId);
+
+        if (response.status === 200) {
+            return response.data.data;
+        } else if (!response.data.successful) {
+            throw new Error(response.data.errorMessage);
+        } else {
+            throw new Error("Error deleting book");
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const GetBooksByGenre = async (genreId, pageNo = 1) => {
+    try {
+        console.log(`http://localhost:5255/api/Book/getByGenre/${genreId}/${pageNo}`);
+        const response = await axios.get(`http://localhost:5255/api/Book/getByGenre/${genreId}/${pageNo}`);
+        if (response.status === 200) {
+            return response.data.data;
+        } else if (!response.data.successful) {
+            throw new Error(response.data.errorMessage);
+        } else {
+            throw new Error("Error fetching books by genre");
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const GetBooksByAuthor = async (authorId, pageNo = 1) => {
+    try {
+        console.log(`http://localhost:5255/api/Book/getByAuthor/${authorId}/${pageNo}`);
+        const response = await axios.get(`http://localhost:5255/api/Book/getByAuthor/${authorId}/${pageNo}`);
+        
+        if (response.status === 200) {
+            return response.data.data;
+        } else if (!response.data.successful) {
+            console.log("aaaaaaaa");
+            throw new Error(response.data.errorMessage);
+        } else {
+            console.log("bbbbbbbb");
+            throw new Error("Error fetching books by author");
+        }
+    } catch(error) {
+        console.error(error);
         throw error;
     }
 }
