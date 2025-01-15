@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.DataAccess.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20250105200824_initialMigration")]
-    partial class initialMigration
+    [Migration("20250113160750_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,11 +84,19 @@ namespace Library.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("BookId");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("GenreId");
+
+                    b.HasIndex("ISBN")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Books");
                 });
@@ -108,6 +116,28 @@ namespace Library.DataAccess.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("Library.DataAccess.Entities.UserEntity", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Library.DataAccess.Entities.BookEntity", b =>
                 {
                     b.HasOne("Library.DataAccess.Entities.AuthorEntity", "Author")
@@ -122,14 +152,27 @@ namespace Library.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Library.DataAccess.Entities.UserEntity", "User")
+                        .WithMany("BorrowedBooks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
                     b.Navigation("Author");
 
                     b.Navigation("Genre");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Library.DataAccess.Entities.AuthorEntity", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Library.DataAccess.Entities.UserEntity", b =>
+                {
+                    b.Navigation("BorrowedBooks");
                 });
 #pragma warning restore 612, 618
         }

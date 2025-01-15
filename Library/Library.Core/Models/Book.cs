@@ -11,8 +11,10 @@ public class Book
     public Guid AuthorId { get; }
     public DateTime BorrowDate { get; }
     public DateTime DueDate { get; }
+    public Guid? UserId { get; }
     
-    public Book(Guid id, string isbn, string title, string imageUrl, Guid genreId, string description, Guid authorId, DateTime borrowDate, DateTime dueDate)
+    public Book(Guid id, string isbn, string title, string imageUrl, Guid genreId, string description, Guid authorId, 
+        DateTime borrowDate, DateTime dueDate, Guid? userId)
     {
         Id = id;
         ISBN = isbn;
@@ -23,5 +25,6 @@ public class Book
         AuthorId = authorId;
         BorrowDate = borrowDate;
         DueDate = dueDate;
+        UserId = userId;
     }
 }

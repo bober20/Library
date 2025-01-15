@@ -39,8 +39,6 @@ public static class DependencyInjection
     private static Book MapBook(BookEntity src, ResolutionContext resolutionContext)
     {
         return new Book(src.BookId, src.ISBN, src.Title, src.ImageUrl,
-            src.GenreId, src.Description,
-            src.AuthorId,
-            src.BorrowDate, src.DueDate);
+            src.GenreId, src.Description, src.AuthorId, src.BorrowDate, src.DueDate, src.UserId ?? Guid.Empty);
     }
 }

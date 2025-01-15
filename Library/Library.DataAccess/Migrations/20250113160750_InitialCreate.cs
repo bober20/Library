@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Library.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,6 +39,19 @@ namespace Library.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Books",
                 columns: table => new
                 {
@@ -50,7 +63,8 @@ namespace Library.DataAccess.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
                     BorrowDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,6 +81,12 @@ namespace Library.DataAccess.Migrations
                         principalTable: "Genres",
                         principalColumn: "GenreId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Books_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -78,6 +98,23 @@ namespace Library.DataAccess.Migrations
                 name: "IX_Books_GenreId",
                 table: "Books",
                 column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_ISBN",
+                table: "Books",
+                column: "ISBN",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_UserId",
+                table: "Books",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -91,6 +128,9 @@ namespace Library.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
