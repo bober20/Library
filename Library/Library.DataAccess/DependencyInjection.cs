@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddTransient<IGenreRepository, GenreRepository>();
         services.AddTransient<IAuthorRepository, AuthorRepository>();
         services.AddTransient<IBookRepository, BookRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
 
         var config = new MapperConfiguration(cfg =>
         {
@@ -23,6 +24,9 @@ public static class DependencyInjection
                 .ReverseMap();
             cfg.CreateMap<BookEntity, Book>()
                 .ConstructUsing(MapBook)
+                .ReverseMap();
+            cfg.CreateMap<UserEntity, User>()
+                .ConstructUsing(src => new User(src.UserId, src.Email, src.PasswordHash))
                 .ReverseMap();
         });
 

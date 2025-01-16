@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
-using Library.Core.Models;
 
-namespace Library.Core.Abstractions;
+namespace Library.Application.Abstractions;
 
 public interface IBookRepository
 {

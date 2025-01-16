@@ -1,12 +1,13 @@
-using Library.Core.Models;
-
-namespace Library.Core.Abstractions;
+namespace Library.Application.Abstractions;
 
 public interface IUnitOfWork
 {
     IBookRepository BookRepository { get; }
     IAuthorRepository AuthorRepository { get; }
     IGenreRepository GenreRepository { get; }
+    IPasswordHasher PasswordHasher { get; }
+    IUserRepository UserRepository { get; }
+    IJwtProvider JwtProvider { get; }
     
     Task SaveAllAsync();
     Task DeleteDatabaseAsync();

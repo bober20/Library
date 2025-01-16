@@ -1,6 +1,4 @@
-using Library.Core.Models;
-
-namespace Library.Core.Abstractions;
+namespace Library.Application.Abstractions;
 
 public interface IGenreRepository
 {

@@ -9,6 +9,12 @@ public class User
         PasswordHash = passwordHash;
     }
     
+    public User(string email, string passwordHash)
+    {
+        Email = email;
+        PasswordHash = passwordHash;
+    }
+    
     public Guid Id { get; }
     public string Email { get; }
     public string PasswordHash { get; }
