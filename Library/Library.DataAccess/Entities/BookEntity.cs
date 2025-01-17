@@ -15,6 +15,6 @@ namespace Library.DataAccess.Entities
         
         public GenreEntity Genre { get; set; }
         public AuthorEntity Author { get; set; }
-        public UserEntity User { get; set; }
+        public UserEntity? User { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Library.DataAccess.Configurations
             builder.Property(b => b.Description).IsRequired();
             builder.Property(b => b.BorrowDate).IsRequired();
             builder.Property(b => b.DueDate).IsRequired();
-            builder.Property(b => b.UserId); 
+            builder.Property(b => b.UserId).IsRequired(false); 
 
             builder.HasOne(b => b.Genre)
                 .WithMany()
@@ -29,7 +29,8 @@ namespace Library.DataAccess.Configurations
             builder.HasOne(b => b.User)
                 .WithMany(u => u.BorrowedBooks)
                 .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
         }
     }
 }
